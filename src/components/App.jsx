@@ -1,11 +1,11 @@
 import { Component } from 'react';
 import { Notify } from 'notiflix';
 import { getPictures } from 'services/api';
-import { SearchBar } from './Search/Searchbar'
-import { ImageGallery } from './ImageGallery/ImageGallery';
-import { Button } from './Button/Button'
-import { Loader } from './Loader/Loader';
-import { Modal } from './Modal/Modal';
+import { SearchBar } from './search/Searchbar'
+import { ImageGallery } from './imageGallery/ImageGallery';
+import { Button } from './button/Button'
+import { Loader } from './loader/Loader';
+import { Modal } from './modal/Modal';
 import { AppContainer} from './App.styled';
 
 export class App extends Component {
