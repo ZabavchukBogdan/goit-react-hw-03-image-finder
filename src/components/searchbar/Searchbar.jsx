@@ -1,58 +1,59 @@
-import PropTypes from 'prop-types';
 import { Component } from 'react';
-import { toast } from 'react-toastify';
-
+import PropTypes from 'prop-types';
+import { Notify } from 'notiflix';
 import {
-  Form,
-  Header,
-  BtnSearchForm,
-  BtnLabel,
-  Input,
+  SearchbarContainer,
+  SearchForm,
+  SearchFormButton,
+  SearchFormInput,
 } from './Searchbar.styled';
 
-
-
-export class Searchbar extends Component {
-  state = { text: '' };
-
-  // отримання значення з поля введення та запис до state
-  handleSearch = ({ currentTarget: { value } }) => {
-    this.setState({ text: value.toLowerCase() });
+export class SearchBar extends Component {
+  state = {
+    pictureName: '',
+  };
+  handlePictureNameChange = event => {
+    this.setState({ pictureName: event.currentTarget.value.toLowerCase() });
   };
 
-  // функція відправки даних до App
   handleSubmit = event => {
     event.preventDefault();
-    if (this.state.text.trim() === '') {
-      return toast.warn('Ви не ввели текст для пошуку!');
+
+    if (!this.state.pictureName.trim()) {
+      Notify.info('Please enter a topic to search for images...', {
+        position: 'center-center',
+      });
+
+      return;
     }
-    this.props.onSubmit(this.state.text); // прокидання до Арр state
-    this.setState({ text: '' }); // очищення поля пошуку
+
+    this.props.onSubmit(this.state.pictureName.trim());
+
+    this.setState({ pictureName: '' });
   };
 
   render() {
     return (
-      <Header>
-        <Form onSubmit={this.handleSubmit}>
-          <BtnSearchForm type="submit">
-            <BtnLabel>Search</BtnLabel>
-          </BtnSearchForm>
-
-          <Input
+      <SearchbarContainer>
+        <SearchForm onSubmit={this.handleSubmit}>
+          <SearchFormButton type="submit" className="button">
+            Search
+          </SearchFormButton>
+          <SearchFormInput
+            className="input"
             type="text"
-            name="text"
-            value={this.state.text}
             autoComplete="off"
             autoFocus
             placeholder="Search images and photos"
-            onChange={this.handleSearch}
+            value={this.state.pictureName}
+            onChange={this.handlePictureNameChange}
           />
-        </Form>
-      </Header>
+        </SearchForm>
+      </SearchbarContainer>
     );
   }
 }
 
-Searchbar.propTypes = {
+SearchBar.propTypes = {
   onSubmit: PropTypes.func.isRequired,
 };

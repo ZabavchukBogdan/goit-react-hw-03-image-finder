@@ -1,15 +1,12 @@
-import { React, Component } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { getPictures } from 'api/api';
-import { Searchbar } from './searchbar/Searchbar';
-import { ImageGallery } from './image-gallery/ImageGallery';
-import { Wrapper } from './App.styled';
-import { Loader } from './loader/Loader';
-import { Button } from './button/Button';
-import { ModalWindow } from './modal/Modal';
-
-
+import { Component } from 'react';
+import { Notify } from 'notiflix';
+import { getPictures } from 'services/api';
+import { SearchBar } from './Searchbar/Searchbar';
+import { ImageGallery } from './ImageGallery/ImageGallery';
+import { Button } from './Button/Button'
+import { Loader } from './Loader/Loader';
+import { Modal } from './Modal/Modal';
+import { AppContainer} from './App.styled';
 
 export class App extends Component {
   state = {
@@ -25,7 +22,7 @@ export class App extends Component {
     error: false,
   };
 
-  // метод отримання та збереження перших зображень у state
+  // життєвий цикл
   componentDidUpdate(_, prevState) {
     const { page, textForSearch, per_page } = this.state;
 
@@ -35,12 +32,14 @@ export class App extends Component {
     ) {
       this.setState({ status: 'pending' });
 
-      
+   
       getPictures(textForSearch, page, per_page)
         .then(elements => {
-          if (!elements.hits.length) {
+          if (elements.hits.length === 0) {
             this.setState({ status: 'idle' });
-            return toast.info(`Зображення ${textForSearch} відсутні`);
+            return Notify.failure('Sorry images not found...', {
+              position: 'center-center',
+            });
           }
 
           this.setState(prevState => ({
@@ -56,7 +55,7 @@ export class App extends Component {
     }
   }
 
-  //додаємо данні в this.state
+  //Приймаємо та оновлюємо данні в this.state
   handleFormSubmit = textForSearch => {
     this.setState({ textForSearch, page: 1, pictures: [] });
   };
@@ -94,8 +93,9 @@ export class App extends Component {
     } = this.state;
 
     return (
-      <Wrapper>
-        <Searchbar onSubmit={this.handleFormSubmit} />
+      <AppContainer>
+        <SearchBar onSubmit={this.handleFormSubmit} />
+
 
         {pictures.length > 0 && !error && (
           <ImageGallery pictures={pictures} onClick={this.getImgData} />
@@ -108,19 +108,13 @@ export class App extends Component {
         )}
 
         {modalVisible && (
-          <ModalWindow
+          <Modal
             modalImgURL={modalImgURL}
             tagsImg={tagsImg}
             onClose={this.toggleModal}
           />
         )}
-
-
-         <ToastContainer autoClose={3000} />
-      </Wrapper>
+      </AppContainer>
     );
   }
 }
-
-
-
