@@ -1,46 +1,50 @@
 import { Component } from 'react';
-import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 import { Overlay } from './Modal.styled';
 import { Modal } from './Modal.styled';
 
-const modalRoot = document.querySelector('#modal-root');
-
-export class ModalImg extends Component {
-  // функція закриття модального вікна по клавіші ESC
-  handleKeyDown = event => {
-    if (event.code === 'Escape') {
-      this.props.closeModal();
-    }
-  };
-
-  // функція закриття модального вікна по кліку на backdrop
-  handleBackDrop = event => {
-    if (event.currentTarget === event.target) {
-      this.props.closeModal();
-    }
-  };
-
-  // вішаємо слухач на модальне вікно
+export class ModalWindow extends Component {
+  //Вішаємо слухача подій при відкривання модалки та "відключаємо" scroll
   componentDidMount() {
-    window.addEventListener('keydown', this.handleKeyDown);
+    window.addEventListener('keydown', this.onKeydown);
+    document.body.style.overflow = 'hidden';
   }
 
-  // знімаємо слухач з модального вікна
+  //Знімаємо слухача подій при закритті модалки та "вмикаємо" scroll
   componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeyDown);
+    window.removeEventListener('keydown', this.onKeydown);
+    document.body.style.overflow = 'visible';
   }
+
+  //Закриття на "esc"
+  onKeydown = event => {
+    if (event.code === 'Escape') {
+      this.props.onClose();
+    }
+  };
+
+  //Закриття при кліку на Backdrop
+  onBackdropClick = event => {
+    if (event.currentTarget === event.target) {
+      this.props.onClose();
+    }
+  };
 
   render() {
-    return createPortal(
-      <Overlay onClick={this.handleBackDrop}>
-        <Modal>{this.props.children}</Modal>
-      </Overlay>,
-      modalRoot
+    const { modalImgURL, tagsImg } = this.props;
+
+    return (
+      <Overlay onClick={this.onBackdropClick}>
+        <Modal>
+          <img src={modalImgURL} alt={tagsImg} />
+        </Modal>
+      </Overlay>
     );
   }
 }
 
-ModalImg.propTypes = {
-  closeModal: PropTypes.func.isRequired,
+Modal.propTypes = {
+  modalImgURL: PropTypes.string.isRequired,
+  tagsImg: PropTypes.string.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
