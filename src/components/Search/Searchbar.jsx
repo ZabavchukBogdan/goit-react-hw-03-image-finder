@@ -10,16 +10,16 @@ import {
 
 export class SearchBar extends Component {
   state = {
-    pictureName: '',
+    textForSearch: '',
   };
   handlePictureNameChange = event => {
-    this.setState({ pictureName: event.currentTarget.value.toLowerCase() });
+    this.setState({ textForSearch: event.currentTarget.value.toLowerCase() });
   };
 
   handleSubmit = event => {
     event.preventDefault();
 
-    if (!this.state.pictureName.trim()) {
+    if (!this.state.textForSearch.trim()) {
       Notify.info('Please enter a topic to search for images...', {
         position: 'center-center',
       });
@@ -27,9 +27,9 @@ export class SearchBar extends Component {
       return;
     }
 
-    this.props.onSubmit(this.state.pictureName.trim());
+    this.props.onSubmit(this.state.textForSearch.trim());
 
-    this.setState({ pictureName: '' });
+    this.setState({ textForSearch: '' });
   };
 
   render() {
@@ -45,7 +45,7 @@ export class SearchBar extends Component {
             autoComplete="off"
             autoFocus
             placeholder="Search images and photos"
-            value={this.state.pictureName}
+            value={this.state.textForSearch}
             onChange={this.handlePictureNameChange}
           />
         </SearchForm>

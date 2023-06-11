@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { Notify } from 'notiflix';
 import { getPictures } from 'services/api';
-import { SearchBar } from './Searchbar/Searchbar';
+import { SearchBar } from './Search/Searchbar'
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Button } from './Button/Button'
 import { Loader } from './Loader/Loader';
